@@ -1,0 +1,151 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../controllers/quiz_controller.dart';
+import '../widgets/bottom_nav_bar.dart';
+
+class QuizScreen extends StatelessWidget {
+  const QuizScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => QuizController(),
+      child: Builder(builder: (context) {
+        final quizController = Provider.of<QuizController>(context);
+        final question = quizController.currentQuestion;
+
+        return Scaffold(
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      const CircleAvatar(
+                        radius: 24,
+                        backgroundColor: Colors.white24,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        question.subject,
+                        style: Theme.of(context).textTheme.headlineLarge,
+                      ),
+                      Text(
+                        '#${question.questionNumber}',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    question.questionText,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(height: 24),
+                  ...List.generate(
+                    question.options.length,
+                    (index) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: _buildOptionButton(
+                        context,
+                        question.options[index],
+                        index,
+                        quizController,
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: quizController.isAnswerSelected
+                          ? () => quizController.checkAnswer()
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.secondary,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        'Check The Answer',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          bottomNavigationBar: const CustomBottomNavBar(),
+        );
+      }),
+    );
+  }
+
+  Widget _buildOptionButton(
+    BuildContext context,
+    String text,
+    int index,
+    QuizController controller,
+  ) {
+    final isSelected = controller.selectedAnswerIndex == index;
+    final hasSubmitted = controller.hasSubmitted;
+    final isCorrect = index == controller.currentQuestion.correctAnswerIndex;
+
+    Color? backgroundColor;
+    if (hasSubmitted) {
+      backgroundColor = isCorrect
+          ? Colors.green.withOpacity(0.2)
+          : isSelected
+              ? Colors.red.withOpacity(0.2)
+              : null;
+    } else if (isSelected) {
+      backgroundColor = Theme.of(context).colorScheme.primary.withOpacity(0.2);
+    }
+
+    return OutlinedButton(
+      onPressed: () => controller.selectAnswer(index),
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.all(16),
+        alignment: Alignment.centerLeft,
+        backgroundColor: backgroundColor,
+        side: BorderSide(
+          color: isSelected
+              ? Theme.of(context).colorScheme.primary
+              : Colors.white.withOpacity(0.2),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+        ),
+      ),
+    );
+  }
+}
