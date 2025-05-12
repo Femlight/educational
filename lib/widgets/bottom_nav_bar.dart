@@ -1,41 +1,80 @@
+import 'package:educational_mobile/screens/home_screen.dart';
+import 'package:educational_mobile/screens/practice_screen.dart';
 import 'package:flutter/material.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
-  const CustomBottomNavBar({super.key});
+  final int selectedIndex;
+
+  CustomBottomNavBar({super.key, required this.selectedIndex});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        border: Border(
-          top: BorderSide(
-            color: Colors.white.withOpacity(0.1),
-            width: 1,
-          ),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildNavItem(context, Icons.home, true),
-          _buildNavItem(context, Icons.school, false),
-          _buildNavItem(context, Icons.article, false),
-        ],
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _buildNavItem(context, Icons.home, selectedIndex == 0, 'Home'),
+        const SizedBox(width: 10),
+        _buildNavItem(context, Icons.school, selectedIndex == 1, 'School'),
+        const SizedBox(width: 10),
+        _buildNavItem(context, Icons.article, selectedIndex == 2, 'Practice'),
+      ],
     );
   }
 
-  Widget _buildNavItem(BuildContext context, IconData icon, bool isSelected) {
-    return IconButton(
-      icon: Icon(
-        icon,
-        color: isSelected
-            ? Theme.of(context).colorScheme.primary
-            : Colors.white.withOpacity(0.5),
+  Widget _buildNavItem(
+    BuildContext context,
+    IconData icon,
+    bool isSelected,
+    String value,
+  ) {
+    return InkWell(
+      onTap: () {
+        switch (value) {
+          case 'Home':
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+            );
+            break;
+          case 'School':
+            // Do nothing for School
+            break;
+          case 'Practice':
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => PracticeScreen()),
+            );
+            break;
+          default:
+            break;
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 50),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Color(0xff232323),
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          child: Row(
+            children: [
+              Icon(icon, color: Colors.white),
+              isSelected
+                  ? Text(
+                    value,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Outfit',
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15,
+                    ),
+                  )
+                  : SizedBox(),
+            ],
+          ),
+        ),
       ),
-      onPressed: () {},
     );
   }
 }

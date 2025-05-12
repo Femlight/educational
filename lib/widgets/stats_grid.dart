@@ -1,3 +1,4 @@
+import 'package:educational_mobile/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class StatsGrid extends StatelessWidget {
@@ -30,17 +31,17 @@ class StatsGrid extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildStatRow('Overall Time Spent', '3h 17min'),
+              _buildStatRow('3h 17min', 'Overall Time Spent'),
               const SizedBox(height: 8),
-              _buildStatRow('Variants Solved', '6/20'),
+              _buildStatRow('6/20', 'Variants Solved'),
               const SizedBox(height: 8),
-              _buildStatRow('Mistakes Made', '28'),
+              _buildStatRow('28', 'Mistakes Made'),
             ],
           ),
         ),
@@ -58,21 +59,31 @@ class StatsGrid extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.1),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, color: Theme.of(context).colorScheme.primary),
+            Icon(icon, color: Theme.of(context).colorScheme.background),
             const SizedBox(height: 8),
             Text(
               title,
-              style: Theme.of(context).textTheme.headlineMedium,
+              style: TextStyle(
+                color: AppTheme.backgroundColor,
+                fontFamily: 'Outfit',
+
+                fontSize: 30,
+              ),
             ),
             Text(
               subtitle,
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: TextStyle(
+                color: AppTheme.backgroundColor,
+                fontFamily: 'Outfit',
+
+                fontSize: 30,
+              ),
             ),
           ],
         ),
@@ -84,8 +95,24 @@ class StatsGrid extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label),
-        Text(value),
+        Text(
+          label,
+          style: TextStyle(
+            color: AppTheme.backgroundColor,
+            fontFamily: 'Outfit',
+
+            fontSize: 30,
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            color: AppTheme.backgroundColor,
+            fontFamily: 'Outfit',
+
+            fontSize: 15,
+          ),
+        ),
       ],
     );
   }
